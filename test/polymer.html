@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="components/iron-test-helpers/mock-interactions.js"></script>
+    <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="components/polymer/polymer.html">
+    <link rel="import" href="components/iron-pages/iron-pages.html">
+
+    <link rel="import" href="components/paper-menu/paper-menu.html">
+    <link rel="import" href="components/paper-item/paper-item.html">
+
+    <script src="packages/test/dart.js"></script>
+    <link rel="x-dart-test" href="polymer.dart">
+    <!--<script type="application/dart" src="polymer.dart"></script>-->
+  </head>
+  <body>
+    <iron-pages selected="1">
+      <section>page 0</section>
+      <section>page 1</section>
+    </iron-pages>
+
+    <paper-menu multi selected-values="[0,1]">
+      <paper-item>item 0</paper-item>
+      <paper-item>item 1</paper-item>
+      <paper-item>item 2</paper-item>
+    </paper-menu>
+
+    <!--<script>-->
+      <!--var pages = document.querySelector("iron-pages");-->
+    <!--</script>-->
+  </body>
+</html>

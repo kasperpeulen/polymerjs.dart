@@ -1,0 +1,11 @@
+name: polymerjs_wrapper
+version: 0.0.1
+author: Kasper Peulen
+description: polymer.js 1.0 wrapper
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  dart_to_js_script_rewriter: any
+dev_dependencies:
+  test: any
+  grinder: any
