@@ -9,7 +9,7 @@ bower() {
 }
 
 @DefaultTask("Test")
-@Depends("bower")
+//@Depends("bower")
 test() => new TestRunner().test(
     files: "test/polymer.dart",
-    platformSelector: ["chrome"]);
+    platformSelector: ["dartium,chrome,firefox,safari"]);
