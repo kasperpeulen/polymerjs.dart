@@ -25,8 +25,10 @@ class MockInteractions {
 
   static pressSpace(HtmlElement target) => proxy["pressSpace"].apply([target]);
 
-//  keyDownOn: keyDownOn,
-//  keyUpOn: keyUpOn,
+  static keyDownOn(HtmlElement target, {int keyCode: 13}) => proxy["keyDownOn"].apply([target,keyCode]);
+
+  static keyUpOn(HtmlElement target, {int keyCode: 13}) => proxy["keyUpOn"].apply([target,keyCode]);
+
 //  middleOfNode: middleOfNode,
 //  topLeftOfNode: topLeftOfNode
 }

@@ -1,5 +1,4 @@
-@TestOn('dartium||chrome||firefox||safari')
-
+@TestOn('browser')
 library tests;
 
 import 'dart:async';
@@ -8,8 +7,8 @@ import "dart:js";
 
 import "package:test/test.dart";
 
-import 'package:polymerjs_wrapper/polymer.dart';
-import 'package:polymerjs_wrapper/IronTestHelper.dart';
+import 'package:polymerjs/polymer.dart';
+import 'package:polymerjs/iron-test-helpers.dart';
 
 
 void main() {
@@ -78,6 +77,11 @@ void main() {
       MockInteractions.pressSpace(menu.element);
       expect(menu.focusedItem, startItem);
     });
+    test("selected item is bold", () {
+      expect(menu.selectedItems[0].getComputedStyle().fontWeight,'bold');
+    }, onPlatform: {
+      "firefox": new Skip("firefox broken: NullError: J.getComputedStyle\$0\$x(...) is null")
+    });
 
     test("events", (){
 
@@ -108,4 +112,42 @@ void main() {
       pages.selected = 0;
     });
   });
+
+  // <paper-button raised></paper-button>
+  group("PaperButton", () {
+    var button = new PaperButton.$("paper-button");
+    test("button.raised == true", () => expect(button.raised, isTrue));
+    test("button.toggles == false", () => expect(button.toggles, false));
+    test("button.active == false", () => expect(button.active, false));
+    test("tap sets button.active == true and onChange is fired", () {
+      button.onChange.listen(expectAsync((_) => null));
+      button.toggles = true;
+      MockInteractions.tap(button.element);
+      expect(button.active, true);
+    });
+    test("test pointerDown", () {
+      expect(button.pointerDown, false);
+      MockInteractions.down(button.element);
+      expect(button.pointerDown, true);
+      MockInteractions.up(button.element);
+      expect(button.pointerDown, false);
+    });
+  });
+
+  group("Polymer base", () {
+    test("async fire",() {
+      var button = new PaperButton.$("paper-button");
+      button.raised = false;
+      button.async(() {
+        button.raised = true;
+        button.fire("raised", detail: {"hello" : "world"});
+      }, 1000);
+      button.on("raised").listen(expectAsync((e) {
+        expect(e.detail["hello"], "world");
+        expect(button.raised, true);
+      }));
+    });
+  });
 }
+
+

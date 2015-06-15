@@ -1,17 +1,19 @@
 <!doctype html>
 <html>
   <head>
-    <script src="components/iron-test-helpers/mock-interactions.js"></script>
-    <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="components/polymer/polymer.html">
-    <link rel="import" href="components/iron-pages/iron-pages.html">
+    <script src="packages/polymerjs/components/iron-test-helpers/mock-interactions.js"></script>
+    <script src="packages/polymerjs/components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="packages/polymerjs/components/polymer/polymer.html">
+    <link rel="import" href="packages/polymerjs/components/iron-pages/iron-pages.html">
 
-    <link rel="import" href="components/paper-menu/paper-menu.html">
-    <link rel="import" href="components/paper-item/paper-item.html">
+    <link rel="import" href="packages/polymerjs/components/paper-menu/paper-menu.html">
+    <link rel="import" href="packages/polymerjs/components/paper-item/paper-item.html">
+    <link rel="import" href="packages/polymerjs/components/paper-button/paper-button.html">
+    <link rel="import" href="packages/polymerjs/components/paper-material/paper-material.html">
 
     <script src="packages/test/dart.js"></script>
     <link rel="x-dart-test" href="polymer.dart">
-    <!--<script type="application/dart" src="polymer2.dart"></script>-->
+    <!--<script type="application/dart" src="polymer.dart"></script>-->
   </head>
   <body>
     <iron-pages selected="1">
@@ -24,5 +26,27 @@
       <paper-item>item 1</paper-item>
       <paper-item>item 2</paper-item>
     </paper-menu>
+
+    <paper-button raised></paper-button>
+
+    <dom-module id="hello-world">
+      <style>
+        .foo {
+        @apply(--shadow-elevation-2dp);
+        }
+        .bux {
+          color: var(--default-primary-color);
+        }
+      </style>
+      <template>
+        <div class="bux">hello world</div>
+      </template>
+      <script>
+        Polymer({});
+      </script>
+    </dom-module>
+    <hello-world></hello-world>
+    <script>
+    </script>
   </body>
 </html>

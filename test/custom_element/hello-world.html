@@ -1,0 +1,22 @@
+<dom-module id="hello-world">
+  <style>
+
+  </style>
+  <template>
+    <div>{{hello}}</div>
+  </template>
+  <script type="application/dart">
+  import 'package:polymerjs/polymer.dart';
+
+  @initMethod
+  main() => new Polymer(
+      id: "hello-world",
+      properties: {
+        "hello": {
+          "value": "Hello world"
+        }
+      },
+      ready: (PolymerElement self) =>
+          self["hello"] = "Hello world!!!");
+  </script>
+</dom-module>

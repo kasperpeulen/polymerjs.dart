@@ -1,12 +1,21 @@
 import 'dart:html';
 import 'dart:js';
 import 'dart:async';
+import 'package:polymerjs/jsutils.dart';
+
+class Polymer {
+  static JsObject js = context["Polymer"];
+
+  static JsObject get PaperButtonBehavior => js["PaperButtonBehavior"];
+
+  static JsFunction dom = js["dom"];
+}
 
 abstract class IronSelectableBehavior {
   dynamic operator [](String propertyName);
   void operator []=(String propertyName, dynamic value);
   dynamic call(String methodName, [List args]);
-  Stream listen(String eventName, {Function converter, bool sync: false});
+  Stream on(String eventName, {Function converter, bool sync: false});
 
   /// The event that fires from items when they are selected. Selectable will
   /// listen for this event from items and update the selection state. Set to
@@ -74,11 +83,11 @@ abstract class IronSelectableBehavior {
   /// Select the previous item.
   void selectPrevious() => call("selectPrevious");
 
-  Stream get onIronActivate => listen("iron-activate");
+  Stream get onIronActivate => on("iron-activate");
 
-  Stream get onIronSelect => listen("iron-select");
+  Stream get onIronSelect => on("iron-select");
 
-  Stream get onIronDeSelect => listen("iron-deselect");
+  Stream get onIronDeSelect => on("iron-deselect");
 
 }
 
@@ -131,7 +140,7 @@ abstract class IronResizableBehavior {
   dynamic operator [](String propertyName);
   void operator []=(String propertyName, dynamic value);
   dynamic call(String methodName, [List args]);
-  Stream listen(String eventName, {Function converter, bool sync: false});
+  Stream on(String eventName, {Function converter, bool sync: false});
 
   /// Used to assign the closest resizable ancestor to this resizable if the
   /// ancestor detects a request for notifications.
@@ -148,7 +157,7 @@ abstract class IronResizableBehavior {
   call("stopResizeNotificationsFor", [target]);
 
   /// This event will be fired when the element becomes showing after having been hidden, when the element is resized explicitly by another resizable, or when the window has been resized. Note, the iron-resize event is non-bubbling.
-  Stream get ironResize => listen("iron-resize");
+  Stream get ironResize => on("iron-resize");
 }
 
 /// Polymer.IronMenuBehavior implements accessible menu behavior.
@@ -213,7 +222,7 @@ abstract class IronA11yKeysBehavior {
   dynamic operator [](String propertyName);
   void operator []=(String propertyName, dynamic value);
   dynamic call(String methodName, [List args]);
-  Stream listen(String eventName, {Function converter, bool sync: false});
+  Stream on(String eventName, {Function converter, bool sync: false});
 
   /// The HTMLElement that will be firing relevant KeyboardEvents.
   /// Default: this
@@ -232,5 +241,74 @@ abstract class IronA11yKeysBehavior {
 
   /// The `keys-pressed` event will fire when one of the key combinations set
   /// with the `keys` property is pressed. **Doesn't seem to be implemented.**
-  Stream get keysPressed => listen("keys-pressed");
+  Stream get keysPressed => on("keys-pressed");
+}
+
+abstract class IronButtonState {
+
+  dynamic operator [](String propertyName);
+  void operator []=(String propertyName, dynamic value);
+  dynamic call(String methodName, [List args]);
+  Stream on(String eventName, {Function converter, bool sync: false});
+
+  /// If true, the user is currently holding down the button.
+  /// @readonly
+  /// @default false
+  /// @reflectToAttribute
+  bool get pressed => this["pressed"];
+
+  /// If true, the button toggles the active state with each tap or press of the spacebar.
+  /// @default false
+  /// @reflectToAttribute
+  bool get toggles => this["toggles"];
+
+  /// If true, the button toggles the active state with each tap or press of the spacebar.
+  /// @default false
+  /// @reflectToAttribute
+  set toggles(bool value) => this["toggles"] = value;
+
+  /// If true, the button is a toggle and is currently in the active state.
+  bool get active => this["active"];
+
+  /// If true, the button is a toggle and is currently in the active state.
+  set active(bool value) => this["active"] = value;
+
+  /// True if the element is currently being pressed by a "pointer", which is loosely defined as mouse or touch input (buy specifically excluding keyboard input).
+  bool get pointerDown => this["pointerDown"];
+
+  /// True if the input device that caused the element to receive focus was a keyboard.
+  bool get receivedFocusFromKeyboard => this["receivedFocusFromKeyboard"];
+
+  /// to emulate native checkbox, (de-)activations from a user interaction fire
+  /// 'change' events
+  Stream get onChange => on("change");
+
+}
+
+abstract class IronControlState {
+
+  dynamic operator [](String propertyName);
+  void operator []=(String propertyName, dynamic value);
+  dynamic call(String methodName, [List args]);
+  Stream on(String eventName, {Function converter, bool sync: false});
+
+  /// If true, the element currently has focus.
+  /// @default false
+  /// @notify
+  /// @readOnly
+  /// @reflectToAttribute
+  bool get focused => this["focused"];
+
+  /// If true, the user cannot interact with this element.
+  /// @default false
+  /// @notify
+  /// @reflectToAttribute
+  bool get disabled => this["disabled"];
+
+  /// If true, the user cannot interact with this element.
+  /// @default false
+  /// @notify
+  /// @reflectToAttribute
+  set disabled(bool value) => this["disabled"] = value;
+
 }
