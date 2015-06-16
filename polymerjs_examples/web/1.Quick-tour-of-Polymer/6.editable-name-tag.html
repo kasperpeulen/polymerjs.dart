@@ -1,0 +1,28 @@
+<link rel="import" href="packages/polymerjs_examples/components/polymer/polymer.html">
+<link rel="import" href="packages/polymerjs_examples/components/iron-input/iron-input.html">
+
+<dom-module id="editable-name-tag">
+  <template>
+    <p>
+      This is <strong>{{owner}}</strong>'s editable-name-tag:
+    </p>
+    <!-- iron-input exposes a two-way bindable input value -->
+    <input is="iron-input" bind-value="{{owner}}"
+           placeholder="Your name here...">
+  </template>
+  <script type="application/dart">
+    import "package:polymerjs/polymer.dart";
+
+    @initMethod
+    main() => polymer({
+      "is": "editable-name-tag",
+      "properties": {
+        "owner": {
+          "type": String,
+          "value": "Daniel"
+        }
+      }
+    });
+  </script>
+</dom-module>
+

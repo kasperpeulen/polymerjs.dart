@@ -37,8 +37,6 @@ void main() {
         return collapseHeight;
       }
       ), completion(isNot("0px")));
-    }, onPlatform: {
-      "firefox": new Skip("firefox... getComputedStyle is null")
     });
 
     test('set opened to false', () {
@@ -46,8 +44,6 @@ void main() {
       expect(new Future.delayed(delay, () =>
       collapse.element.getComputedStyle().height
       ), completion("0px"));
-    }, onPlatform: {
-      "firefox": new Skip("firefox... getComputedStyle is null")
     });
 
     test('set opened to true', () {
@@ -55,8 +51,6 @@ void main() {
       expect(new Future.delayed(delay, () =>
       collapse.element.getComputedStyle().height
       ), completion(collapseHeight));
-    }, onPlatform: {
-      "firefox": new Skip("firefox... getComputedStyle is null")
     });
   });
 }

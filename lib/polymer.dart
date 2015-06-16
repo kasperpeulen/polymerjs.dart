@@ -1,11 +1,12 @@
-library polymer;
+library polymerjs.polymer;
 
 import 'dart:html';
 import 'dart:js';
 import 'dart:async';
-import 'package:polymerjs/IronBehaviours.dart';
+import 'package:polymerjs/iron-behaviours.dart';
 import 'package:polymerjs/jsutils.dart';
-export 'package:initialize/initialize.dart';
+
+export "custom-element.dart";
 
 /**
  * Finds the first descendant element of this document that matches the
@@ -18,44 +19,6 @@ class Polymer {
 
   static JsObject get js => context["Polymer"];
 
-  Polymer({String id, Map properties, Function ready}) {
-    var f = (HtmlElement el) {
-      try {
-        ready(new PolymerElement.from(el), el);
-      } on Error {
-        ready(new PolymerElement.from(el));
-      }
-    };
-    Map constructor = {
-      "is" : id,
-      "properties" : properties,
-      "ready" : new JsFunction.withThis(f)
-    };
-    var prototype = Polymer.call('Class', [jsify(constructor)])["prototype"];
-    new JsObject.fromBrowserObject(document).callMethod('registerElement', [
-      id,
-      new JsObject.jsify({'prototype': prototype})
-    ]);
-  }
-
-  Polymer.fromMap(Map map) {
-    Function ready = map["ready"];
-    var f = (HtmlElement el) {
-      try {
-        ready(new PolymerElement.from(el), el);
-      } on Error {
-        ready(new PolymerElement.from(el));
-      }
-    };
-    var constructor = Polymer.call('Class', [jsify(map)]);
-    var prototype = constructor['prototype'];
-    prototype["ready"] = new JsFunction.withThis(f);
-    new JsObject.fromBrowserObject(document).callMethod('registerElement', [
-      map["is"],
-      new JsObject.jsify({'prototype': prototype})
-    ]);
-  }
-
   dynamic operator [](String propertyName) => js[propertyName];
   void operator []=(String propertyName, dynamic value) {
     js[propertyName] = value;
@@ -66,29 +29,6 @@ class Polymer {
   /// Re-evaluates and applies custom CSS properties based on dynamic changes,
   /// such as adding or removing classes in this element's local DOM.
   static updateStyles() => call("updateStyles");
-}
-
-
-
-void polymer({String id, Map properties, Function ready}) {
-  var f = (HtmlElement el) {
-    try {
-      ready(new PolymerElement.from(el), el);
-    } on Error {
-      ready(new PolymerElement.from(el));
-    }
-  };
-  Map constructor = {
-    "id" : id,
-    "properties" : properties,
-    "ready" : new JsFunction.withThis(f)
-  };
-  constructor = Polymer.call('Class', [jsify(constructor)]);
-  var prototype = constructor['prototype'];
-  new JsObject.fromBrowserObject(document).callMethod('registerElement', [
-    id,
-    new JsObject.jsify({'prototype': prototype})
-  ]);
 }
 
 class PolymerElement extends Object with PolymerBase, HtmlElementMixin {

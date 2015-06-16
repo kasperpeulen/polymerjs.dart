@@ -71,8 +71,6 @@ void main() {
     new Future(() {
       expect(item.element.getComputedStyle().minHeight, "60px");
     });
-  },  onPlatform: {
-    "firefox": new Skip("firefox and getComputedStyle... ")
   });
 
 }

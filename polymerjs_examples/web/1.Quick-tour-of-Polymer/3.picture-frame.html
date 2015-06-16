@@ -1,0 +1,30 @@
+<link rel="import"
+      href="packages/polymerjs_examples/components/polymer/polymer.html">
+
+<dom-module id="picture-frame">
+  <!--Local DOM lets you control composition. The element’s children can be
+  distributed so they render as if they were inserted into the local DOM tree.
+  This example creates a simple tag that decorates an image by wrapping it with
+  a styled <div> tag.-->
+  <style>
+    div {
+      display: inline-block;
+      background-color: #ccc;
+      border-radius: 8px;
+      padding: 4px;
+    }
+  </style>
+  <template>
+    <div>
+      <content><!--Any children are rendered here, see index.html.--></content>
+    </div>
+  </template>
+  <script type="application/dart">
+    import "package:polymerjs/polymer.dart";
+
+    @initMethod
+    main() => polymer({
+      "is": "picture-frame"
+    });
+  </script>
+</dom-module>

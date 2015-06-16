@@ -5,17 +5,18 @@ description: polymer.js 1.0 wrapper
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
+dev_dependencies:
   browser: any
   web_components: any
-dev_dependencies:
-  test: any
+  test:
+    git: git://github.com/dart-lang/test.git
   grinder: any
-transformers:
-- web_components:
-    entry_points:
-      - test/custom_element/index_test.html
-      - web/index.html
-- test/pub_serve:
-    $include:
-      - test/custom_element/**.dart
-      - test/**.dart
+#transformers:
+#- web_components:
+#    entry_points:
+#      - test/custom_element/index_test.html
+#      - web/index.html
+#- test/pub_serve:
+#    $include:
+#      - test/custom_element/**.dart
+#      - test/**.dart

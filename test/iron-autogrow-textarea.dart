@@ -47,8 +47,6 @@ void main() {
       autogrow.bindValue = 'batman\nand\nrobin';
       int finalHeight = autogrow.offsetHeight;
       expect(finalHeight > initialHeight, isTrue);
-    }, onPlatform: {
-      "firefox": new Skip("firefox... autogrow.offsetHeight == 0")
     });
 
     test('removing rows shrinks the textarea', () {
@@ -59,8 +57,6 @@ void main() {
       autogrow.bindValue = 'batman';
       int finalHeight = autogrow.offsetHeight;
       expect(finalHeight < initialHeight, isTrue);
-    }, onPlatform: {
-      "firefox": new Skip("firefox... autogrow.offsetHeight == 0")
     });
   });
 }

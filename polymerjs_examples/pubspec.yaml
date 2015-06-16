@@ -1,0 +1,11 @@
+name: polymerjs_examples
+version: 0.0.1
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  browser: any
+  web_components: any
+  polymerjs:
+    path: ../
+transformers:
+- web_components

@@ -10,14 +10,12 @@ const base = "test/base.dart";
 const polymer = "test/polymer.dart";
 const iron_collapse = "test/iron-collapse.dart";
 const iron_autogrow_textarea = "test/iron-autogrow-textarea.dart";
-const custom_element = "test/custom_element/index_test.dart";
 
 const allFiles = const [
   base,
   polymer,
   iron_collapse,
-  iron_autogrow_textarea,
-  custom_element
+  iron_autogrow_textarea
 ];
 
 main(args) => grind(args);
@@ -32,8 +30,9 @@ bower() {
 @Depends("bower")
 testAll() => new TestRunner().test(
     files: allFiles,
-    platformSelector: all,
-    pubServe: 8081);
+    platformSelector: all
+//    pubServe: 8081
+);
 
 @Task("Custom test")
 test() => new TestRunner().test(
@@ -41,11 +40,11 @@ test() => new TestRunner().test(
       base,
       polymer,
       iron_collapse,
-      iron_autogrow_textarea,
-      custom_element
+      iron_autogrow_textarea
     ],
-    platformSelector: all,
-    pubServe: 8081);
+    platformSelector: all
+//    pubServe: 8081
+);
 
 @Task("Pub serve")
 serve() {

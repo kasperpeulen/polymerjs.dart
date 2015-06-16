@@ -9,15 +9,17 @@
   import 'package:polymerjs/polymer.dart';
 
   @initMethod
-  main() =>
+  main() {
     new Polymer(
-      properties: {
-        "hello": {
-          "type": "String"
-        }
-      },
-      ready: (PolymerElement self) =>
-          self["hello"] = "Hello world!!!"
+        id : "hello-world",
+        properties: {
+          "hello": {
+            "value" : "hello"
+          }
+        },
+        ready: (PolymerElement self) =>
+        self["hello"] = "Hello world!!!"
     );
+  }
   </script>
 </dom-module>

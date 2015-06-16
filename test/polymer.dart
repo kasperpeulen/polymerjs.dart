@@ -78,9 +78,7 @@ void main() {
       expect(menu.focusedItem, startItem);
     });
     test("selected item is bold", () {
-      expect(menu.selectedItems[0].getComputedStyle().fontWeight,'bold');
-    }, onPlatform: {
-      "firefox": new Skip("firefox broken: NullError: J.getComputedStyle\$0\$x(...) is null")
+      expect(menu.selectedItems[0].getComputedStyle().fontWeight, isIn(['bold', '700']));
     });
 
     test("events", (){
