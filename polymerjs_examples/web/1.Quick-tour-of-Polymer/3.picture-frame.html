@@ -1,11 +1,13 @@
 <link rel="import"
       href="packages/polymerjs_examples/components/polymer/polymer.html">
 
+<!--Local DOM lets you control composition. The element’s children can be
+distributed so they render as if they were inserted into the local DOM tree.
+
+This example creates a simple tag that decorates an image by wrapping it with
+a styled <div> tag.-->
 <dom-module id="picture-frame">
-  <!--Local DOM lets you control composition. The element’s children can be
-  distributed so they render as if they were inserted into the local DOM tree.
-  This example creates a simple tag that decorates an image by wrapping it with
-  a styled <div> tag.-->
+  <!-- scoped CSS for this element -->
   <style>
     div {
       display: inline-block;
@@ -28,3 +30,6 @@
     });
   </script>
 </dom-module>
+<!--Note: The CSS styles defined inside the <dom-module> are scoped to the
+element’s local DOM. So the div rule here only affects <div> tags inside
+<picture-frame>.-->

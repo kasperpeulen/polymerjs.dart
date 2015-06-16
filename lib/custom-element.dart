@@ -6,11 +6,14 @@ export 'package:initialize/initialize.dart';
 export 'package:web_components/src/init.dart';
 
 
-void polymer(Map constructor) {
-  context["Polymer"].apply([jsify(constructor)]);
+JsObject polymer(Map constructor) {
+  var js = jsify(constructor);
+  js["factoryImpl"] = new JsFunction.withThis((HtmlElement element, List args) =>
+      constructor["factoryImpl"](new PolymerElement.from(element), args));
+  return context["Polymer"].apply([js]);
 }
 
-JsObject jsify(Object dartObject) {
+dynamic jsify(Object dartObject) {
   if (dartObject == null) {
     return null;
   } else if (dartObject is JsObject) {
@@ -32,6 +35,7 @@ JsObject jsify(Object dartObject) {
   }
   return dartObject;
 }
+
 
 Map<Type, JsFunction> dartType2Js = {
   int : context['Number'],

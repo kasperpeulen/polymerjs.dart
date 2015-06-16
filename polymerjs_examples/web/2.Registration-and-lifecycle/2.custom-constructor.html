@@ -1,0 +1,16 @@
+<!-- The Polymer method returns a basic constructor that can be used to instantiate
+the custom element. If you want to pass arguments to the constructor to configure
+the new element, you can specify a custom factoryImpl function on the prototype.
+
+The constructor returned from Polymer creates an instance using
+document.createElement, then invokes the user-supplied factoryImpl function with
+this bound to the element instance. Any arguments passed to the actual constructor
+are passed on to factoryImpl function.-->
+
+<dom-module id="custom-constructor">
+  <template>
+    <p><strong>{{foo}}</strong> <strong>{{bar}}</strong></p>
+  </template>
+  <script type="application/dart" src="debug.dart">
+  </script>
+</dom-module>

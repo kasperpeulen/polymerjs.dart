@@ -7,6 +7,8 @@ import 'package:polymerjs/iron-behaviours.dart';
 import 'package:polymerjs/jsutils.dart';
 
 export "custom-element.dart";
+export "dart:html";
+export "dart:js";
 
 /**
  * Finds the first descendant element of this document that matches the
@@ -48,6 +50,11 @@ class PolymerElement extends Object with PolymerBase, HtmlElementMixin {
 
   PolymerElement.$(String selector) : element = $(selector);
 
+  PolymerElement.fromConstructor(JsObject constructor, [List args]) {
+    JsObject jsElement = new JsObject(constructor, [args]);
+    context['hack_to_convert_jsobject_to_html_element'] = jsElement;
+    element = context['hack_to_convert_jsobject_to_html_element'];
+  }
   dynamic property(String name) => js[name];
 
   dynamic setProperty(String name, dynamic value) => js[name] = value;
@@ -361,6 +368,10 @@ abstract class PolymerBase {
 abstract class HtmlElementMixin {
   HtmlElement element;
 
+  HtmlElement get el => element;
+
+  set el(HtmlElement value) => element = value;
+
   /// The offsetHeight read-only property is the height of the element including
   /// vertical padding and borders, in pixels, as an integer.
   int get offsetHeight => element.offsetHeight;
@@ -368,6 +379,10 @@ abstract class HtmlElementMixin {
   String get text => element.text;
 
   set text(String value) => element.text = value;
+
+  void appendTo(HtmlElement parentElement) {
+    parentElement.append(element);
+  }
 }
 
 /// `iron-pages` is used to select one of its children to show. One use is to
