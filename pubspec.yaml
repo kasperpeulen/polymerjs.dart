@@ -5,9 +5,9 @@ description: polymer.js 1.0 wrapper
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
+  web_components: any
 dev_dependencies:
   browser: any
-  web_components: any
   test:
     git: git://github.com/dart-lang/test.git
   grinder: any
