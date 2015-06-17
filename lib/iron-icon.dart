@@ -4,9 +4,8 @@ import 'dart:html';
 
 class IronIcon extends PolymerElement {
 
-  IronIcon() : super("iron-icon");
+  IronIcon() : super.tag("iron-icon");
   IronIcon.from(HtmlElement element) : super.from(element);
-  IronIcon.fromSelector(String selector) : super.fromSelector(selector);
   IronIcon.$(String selector) : super.$(selector);
 
   /// The name of the icon to use. The name should be of the form:

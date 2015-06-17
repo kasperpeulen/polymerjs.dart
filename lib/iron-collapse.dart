@@ -42,7 +42,7 @@ import 'package:polymerjs/polymer.dart';
 /// @element iron-collapse
 class IronCollapse extends PolymerElement {
 
-  IronCollapse() : super("iron-collapse");
+  IronCollapse() : super.tag("iron-collapse");
   IronCollapse.from(HtmlElement element) : super.from(element);
   IronCollapse.$(String selector) : super.$(selector);
 

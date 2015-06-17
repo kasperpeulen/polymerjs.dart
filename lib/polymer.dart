@@ -5,7 +5,7 @@ import 'dart:js';
 import 'dart:async';
 import 'package:polymerjs/iron-behaviours.dart';
 import 'package:polymerjs/jsutils.dart';
-
+import "package:polymerjs/custom-element.dart" as custom;
 export "custom-element.dart";
 export "dart:html";
 export "dart:js";
@@ -14,59 +14,175 @@ export "dart:js";
  * Finds the first descendant element of this document that matches the
  * specified group of selectors.
  */
-Element $(String selectors) => querySelector(selectors);
+HtmlElement $(String selectors) => querySelector(selectors);
 
-/// Experimental... don't look at it !
+WebElement $$(String selectors) {
+  HtmlElement element = querySelector(selectors);
+  if (element == null) {
+    return null;
+  } else {
+    JsObject js = new JsObject.fromBrowserObject(element);
+    String name = js["constructor"]["name"];
+    if (name.contains("-")) {
+      return new PolymerElement.from(element);
+    } else {
+      return new WebElement.from(element);
+    }
+  }
+}
+
+JsObject polymer(Map constructor, [Function typeConstructor]) =>
+context.callMethod("Polymer", [jsify(constructor, typeConstructor)]);
+
 class Polymer {
-
   static JsObject get js => context["Polymer"];
 
   dynamic operator [](String propertyName) => js[propertyName];
   void operator []=(String propertyName, dynamic value) {
     js[propertyName] = value;
   }
-  static call(String methodName, [List args]) =>
-  js.callMethod(methodName, args);
+
+  static call(Map constructor) => polymer(constructor);
+
+  static JsObject Class(Map constructor) {
+    return context["Polymer"].callMethod("Class", [jsify(constructor)]);
+  }
+
+  static JsObject registerElement(String tag, JsObject constructor) {
+    return new JsObject.fromBrowserObject(document).callMethod(
+        'registerElement',
+        [tag, constructor]);
+  }
 
   /// Re-evaluates and applies custom CSS properties based on dynamic changes,
   /// such as adding or removing classes in this element's local DOM.
-  static updateStyles() => call("updateStyles");
+  static updateStyles() => context["Polymer"].callMethod("updateStyles");
 }
 
-class PolymerElement extends Object with PolymerBase, HtmlElementMixin {
-  HtmlElement element;
+
+class WebElement {
+  final HtmlElement element;
+
+  WebElement(String tag, [String typeExtension])
+      : element = new Element.tag(tag, typeExtension);
+
+  // See this issue for why this is needed:
+  // https://github.com/dart-lang/sdk/issues/23661
+  WebElement.extension(String tag, String typeExtension)
+      : this(tag, typeExtension);
+
+  WebElement.from(this.element);
+
+  WebElement.$(String selectors) : element = querySelector(selectors);
+
+  WebElement.fromJsObject(JsObject jsHTMLElement)
+      : element = jsElementToDartElement(jsHTMLElement);
+
+  /// Use WebElement.el as a shorthand for WebElement.element.
+  HtmlElement get el => element;
+
+  /// The HTMLElement.style property returns a CssStyleDeclaration object that
+  /// represents the element's style attribute.
+  CssStyleDeclaration get style => element.style;
+
+  /// The offsetHeight read-only property is the height of the element including
+  /// vertical padding and borders, in pixels, as an integer.
+  int get offsetHeight => element.offsetHeight;
+
+  /**
+   * All text within this node and its decendents.
+   *
+   * ## Other resources
+   *
+   * * [Node.textContent]
+   * (https://developer.mozilla.org/en-US/docs/Web/API/Node.textContent) from
+   * MDN.
+   */
+  String get text => element.text;
+
+  /**
+   * All text within this node and its decendents.
+   *
+   * ## Other resources
+   *
+   * * [Node.textContent]
+   * (https://developer.mozilla.org/en-US/docs/Web/API/Node.textContent) from
+   * MDN.
+   */
+  set text(String value) => element.text = value;
+
+  /// The id property represents the element's identifier, reflecting the id
+  /// global attribute.
+  ///
+  /// It must be unique in a document, and is often used to retrieve the element.
+  /// Other common usages of id include using the element's ID as a selector when
+  /// styling the document with CSS.
+  String get id => element.id;
+
+  /// The id property represents the element's identifier, reflecting the id
+  /// global attribute.
+  ///
+  /// It must be unique in a document, and is often used to retrieve the element.
+  /// Other common usages of id include using the element's ID as a selector when
+  /// styling the document with CSS.
+  set id(String value) => element.id = value;
+
+  /// The innerHTML property gets the HTML syntax describing the element's
+  /// descendants.
+  String get innerHtml => element.innerHtml;
+
+  /// Parses the HTML fragment and sets it as the contents of this element.
+  /// This uses the default sanitization behavior to sanitize the HTML
+  /// fragment, use [setInnerHtml] to override the default behavior.
+  set innerHtml(String value) => element.innerHtml = value;
+
+  void appendTo(HtmlElement parentElement) {
+    parentElement.append(element);
+  }
+}
+
+class PolymerElement extends WebElement with PolymerBase {
   Map<String, Stream> eventStreams = {};
 
   JsObject _js;
 
   JsObject get js =>
-  _js != null ? _js : new JsObject.fromBrowserObject(element);
+      _js != null ? _js : new JsObject.fromBrowserObject(element);
 
-  PolymerElement(String tag) : element = new Element.tag(tag);
+  PolymerElement(String tag, [typeExtension])
+      : super.extension(tag, typeExtension);
 
-  PolymerElement.from(this.element);
+  PolymerElement.tag(String tag) : super.extension(tag, null);
 
-  PolymerElement.fromSelector(String selector) : element = $(selector);
+  PolymerElement.extension(String tag, String typeExtension)
+      : super.extension(tag, typeExtension);
 
-  PolymerElement.$(String selector) : element = $(selector);
+  PolymerElement.from(HtmlElement element) : super.from(element);
 
-  PolymerElement.fromConstructor(JsObject constructor, [List args]) {
-    JsObject jsElement = new JsObject(constructor, [args]);
-    context['hack_to_convert_jsobject_to_html_element'] = jsElement;
-    element = context['hack_to_convert_jsobject_to_html_element'];
-  }
+  PolymerElement.$(String selector) : super.$(selector);
+
+  PolymerElement.fromConstructor(JsFunction constructor, [List args])
+      : super.fromJsObject(new JsObject(constructor, args));
+
   dynamic property(String name) => js[name];
 
   dynamic setProperty(String name, dynamic value) => js[name] = value;
 
-  dynamic operator [](String propertyName) => js[propertyName];
-
+  dynamic operator [](String propertyName) {
+    var property = js[propertyName];
+    if (property is JsFunction) {
+      dartify([arg0, arg1, arg2, arg3, arg4, arg5, arg6]) =>
+          call(propertyName, [arg0, arg1, arg2, arg3, arg4, arg5, arg6]);
+      return dartify;
+    }
+    return property;
+  }
   void operator []=(String propertyName, dynamic value) {
     js[propertyName] = value;
   }
 
   dynamic call(String methodName, [List args]) =>
-  js.callMethod(methodName, args);
+      js.callMethod(methodName, args);
 
   Stream on(String eventName, {Function converter, bool sync: false}) {
     if (!eventStreams.containsKey(eventName)) {
@@ -95,7 +211,6 @@ class PolymerElement extends Object with PolymerBase, HtmlElementMixin {
     }
   }
 }
-
 
 abstract class PolymerBase {
   dynamic operator [](String propertyName);
@@ -365,31 +480,11 @@ abstract class PolymerBase {
   void updateStyles() => call("updateStyles");
 }
 
-abstract class HtmlElementMixin {
-  HtmlElement element;
-
-  HtmlElement get el => element;
-
-  set el(HtmlElement value) => element = value;
-
-  /// The offsetHeight read-only property is the height of the element including
-  /// vertical padding and borders, in pixels, as an integer.
-  int get offsetHeight => element.offsetHeight;
-
-  String get text => element.text;
-
-  set text(String value) => element.text = value;
-
-  void appendTo(HtmlElement parentElement) {
-    parentElement.append(element);
-  }
-}
-
 /// `iron-pages` is used to select one of its children to show. One use is to
 /// cycle through a list of children "pages".
 class IronPages extends PolymerElement
     with IronSelectableBehavior, IronResizableBehavior {
-  IronPages() : super("iron-pages");
+  IronPages() : super.tag("iron-pages");
   IronPages.from(HtmlElement element) : super.from(element);
   IronPages.$(String selector) : super.$(selector);
 }
@@ -404,7 +499,7 @@ class IronPages extends PolymerElement
 /// activate a menu item. Typing the first letter of a menu item will also focus it.
 class PaperMenu extends PolymerElement
     with IronMenuBehavior, IronMultiSelectableBehavior, IronSelectableBehavior, IronA11yKeysBehavior {
-  PaperMenu() : super("paper-menu");
+  PaperMenu() : super.tag("paper-menu");
   PaperMenu.from(HtmlElement element) : super.from(element);
   PaperMenu.$(String selector) : super.$(selector);
 }
@@ -454,14 +549,14 @@ class PaperMenu extends PolymerElement
 /// @demo demo/index.html
 ///
 class PaperItem extends PolymerElement {
-  PaperItem() : super("paper-item");
+  PaperItem() : super.tag("paper-item");
   PaperItem.from(HtmlElement element) : super.from(element);
   PaperItem.$(String selector) : super.$(selector);
 }
 
 class PaperButton extends PolymerElement
     with IronButtonState, IronControlState, IronA11yKeysBehavior {
-  PaperButton() : super("paper-button");
+  PaperButton() : super.tag("paper-button");
   PaperButton.from(HtmlElement element) : super.from(element);
   PaperButton.$(String selector) : super.$(selector);
 

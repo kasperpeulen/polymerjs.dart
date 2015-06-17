@@ -4,9 +4,9 @@ import 'dart:async';
 import 'package:polymerjs/polymer.dart';
 
 
-/// `iron-autogrow-textarea` is an element containing a textarea that grows in height as more
-/// lines of input are entered. Unless an explicit height or the `maxRows` property is set, it will
-/// never scroll.
+/// `iron-autogrow-textarea` is an element containing a textarea that grows in
+/// height as more lines of input are entered. Unless an explicit height or the
+/// `maxRows` property is set, it will never scroll.
 ///
 /// Example:
 ///
@@ -22,7 +22,7 @@ import 'package:polymerjs/polymer.dart';
 /// @demo demo/index.html
 class IronAutogrowTextarea extends PolymerElement with IronValidatableBehavior {
 
-  IronAutogrowTextarea() : super("iron-autogrow-textarea");
+  IronAutogrowTextarea() : super.tag("iron-autogrow-textarea");
   IronAutogrowTextarea.from(HtmlElement element) : super.from(element);
   IronAutogrowTextarea.$(String selector) : super.$(selector);
 

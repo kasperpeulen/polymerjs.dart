@@ -15,10 +15,10 @@ By specification, the custom element’s name must contain a dash (-).-->
       "is": "instance-via-code",
 
       // those lifecycle callbacks will be explained later
-      "created": (self) => self.text = "Initiated by code!"
+      "created": (self)  {
+        self.text = "Initiated by code!";
+      }
     });
-
-
 
     // The polymer function registers the element with the browser.
     // The PolymerElement constructor can be used to create a new instance of

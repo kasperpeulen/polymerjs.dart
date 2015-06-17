@@ -46,7 +46,8 @@ test() => new TestRunner().test(
 //    pubServe: 8081
 );
 
-@Task("Pub serve")
-serve() {
-  run("pub", arguments: ["serve"]);
+@Task("Serve polymerjs examples.")
+examples() {
+  runAsync("pub", arguments: ["serve"],
+  runOptions: new RunOptions(workingDirectory: "polymerjs_examples"));
 }
