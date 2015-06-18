@@ -5,10 +5,12 @@ import 'dart:js';
 import 'dart:async';
 import 'package:polymerjs/iron-behaviours.dart';
 import 'package:polymerjs/jsutils.dart';
-import "package:polymerjs/custom-element.dart" as custom;
-export "custom-element.dart";
+
+export 'package:initialize/initialize.dart';
+export 'package:web_components/src/init.dart';
 export "dart:html";
 export "dart:js";
+export 'package:polymerjs/jsutils.dart';
 
 /**
  * Finds the first descendant element of this document that matches the
@@ -31,9 +33,11 @@ WebElement $$(String selectors) {
   }
 }
 
-JsObject polymer(Map constructor, [Function typeConstructor]) =>
-context.callMethod("Polymer", [jsify(constructor, typeConstructor)]);
+JsObject polymer(Map constructor) {
+  var js = jsify(constructor);
 
+  return context.callMethod("Polymer", [js]);
+}
 class Polymer {
   static JsObject get js => context["Polymer"];
 
@@ -61,7 +65,13 @@ class Polymer {
 
 
 class WebElement {
+
   final HtmlElement element;
+
+  Map<String, Stream> eventStreams = {};
+
+  JsObject _js;
+  JsObject get js => _js != null ? _js : new JsObject.fromBrowserObject(element);
 
   WebElement(String tag, [String typeExtension])
       : element = new Element.tag(tag, typeExtension);
@@ -131,23 +141,50 @@ class WebElement {
   /// descendants.
   String get innerHtml => element.innerHtml;
 
-  /// Parses the HTML fragment and sets it as the contents of this element.
-  /// This uses the default sanitization behavior to sanitize the HTML
-  /// fragment, use [setInnerHtml] to override the default behavior.
-  set innerHtml(String value) => element.innerHtml = value;
+  /// Use the native dom property,
+  /// see https://github.com/dart-lang/sdk/issues/23666
+  void set innerHtml(String html) {
+    this["innerHTML"] = html;
+  }
 
   void appendTo(HtmlElement parentElement) {
     parentElement.append(element);
   }
+
+  dynamic property(String name) => js[name];
+
+  dynamic setProperty(String name, dynamic value) => js[name] = value;
+
+
+  dynamic operator [](String propertyName) {
+    var property = js[propertyName];
+    if (property is JsFunction) {
+      dartify([arg0, arg1, arg2, arg3, arg4, arg5, arg6]) =>
+      call(propertyName, [arg0, arg1, arg2, arg3, arg4, arg5, arg6]);
+      return dartify;
+    }
+    return property;
+  }
+  void operator []=(String propertyName, dynamic value) {
+    js[propertyName] = value;
+  }
+
+  dynamic call(String methodName, [List args]) =>
+  js.callMethod(methodName, args);
+
+  Stream on(String eventName, {Function converter, bool sync: false}) {
+    if (!eventStreams.containsKey(eventName)) {
+      StreamController controller = new StreamController.broadcast(sync: sync);
+      eventStreams[eventName] = controller.stream;
+      element.on[eventName].listen((e) {
+        controller.add(converter == null ? e : converter(e));
+      });
+    }
+    return eventStreams[eventName];
+  }
 }
 
 class PolymerElement extends WebElement with PolymerBase {
-  Map<String, Stream> eventStreams = {};
-
-  JsObject _js;
-
-  JsObject get js =>
-      _js != null ? _js : new JsObject.fromBrowserObject(element);
 
   PolymerElement(String tag, [typeExtension])
       : super.extension(tag, typeExtension);
@@ -164,35 +201,26 @@ class PolymerElement extends WebElement with PolymerBase {
   PolymerElement.fromConstructor(JsFunction constructor, [List args])
       : super.fromJsObject(new JsObject(constructor, args));
 
-  dynamic property(String name) => js[name];
-
-  dynamic setProperty(String name, dynamic value) => js[name] = value;
 
   dynamic operator [](String propertyName) {
     var property = js[propertyName];
+    if (propertyName.contains(".")) {
+      property = this.get(propertyName);
+    }
     if (property is JsFunction) {
       dartify([arg0, arg1, arg2, arg3, arg4, arg5, arg6]) =>
-          call(propertyName, [arg0, arg1, arg2, arg3, arg4, arg5, arg6]);
+      call(propertyName, [arg0, arg1, arg2, arg3, arg4, arg5, arg6]);
       return dartify;
     }
     return property;
   }
+
   void operator []=(String propertyName, dynamic value) {
-    js[propertyName] = value;
-  }
-
-  dynamic call(String methodName, [List args]) =>
-      js.callMethod(methodName, args);
-
-  Stream on(String eventName, {Function converter, bool sync: false}) {
-    if (!eventStreams.containsKey(eventName)) {
-      StreamController controller = new StreamController.broadcast(sync: sync);
-      eventStreams[eventName] = controller.stream;
-      element.on[eventName].listen((e) {
-        controller.add(converter == null ? e : converter(e));
-      });
+    if(propertyName.contains(".")) {
+      this.set(propertyName, value);
+    } else {
+      js[propertyName] = value;
     }
-    return eventStreams[eventName];
   }
 
   /// The user can directly modify a Polymer element's custom style property by
@@ -472,8 +500,15 @@ abstract class PolymerBase {
   void scopeSubtree(container, shouldObserve) =>
       call("scopeSubtree", [container, shouldObserve]);
 
+  /// Convienence method for setting a value to a path and notifying any elements
+  /// bound to the same path.
+  ///
+  /// Note, if any part in the path except for the last is undefined, this method
+  /// does nothing (this method does not throw when dereferencing undefined paths).
+  void set(String path, dynamic value, [root]) => call("set", [path, value, root]);
+
   /// Toggles a CSS class on or off.
-  void toggleClass(String name, {bool boolean, HtmlElement node}) =>
+  void toggleClass(String name, [bool boolean, HtmlElement node]) =>
       call("toggleClass", [name, boolean, node]);
 
   /// Re-evaluates and applies custom CSS properties based on dynamic changes to this element's scope, such as adding or removing classes in this element's local DOM.

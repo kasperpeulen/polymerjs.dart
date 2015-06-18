@@ -11,17 +11,17 @@ final JsObject _Object = context['Object'];
 /**
  * Convert a Dart object to a suitable parameter to a JavaScript method.
  */
-dynamic jsify(Object dartObject, [Function typeConstructor]) {
+dynamic jsify(Object dartObject) {
   if (dartObject == null) {
     return null;
   } else if (dartObject is JsObject) {
     return dartObject;
   } else if (dartObject is List) {
-    return new JsArray.from(dartObject.map((item) => jsify(item, typeConstructor)));
+    return new JsArray.from(dartObject.map((item) => jsify(item)));
   } else if (dartObject is Map<String, dynamic>) {
     JsObject jsObject = new JsObject(context["Object"]);
     dartObject.forEach((key, value) {
-      jsObject[key] = jsify(value, typeConstructor);
+      jsObject[key] = jsify(value);
     });
     return jsObject;
   } else if (dartObject is Type) {
@@ -29,13 +29,14 @@ dynamic jsify(Object dartObject, [Function typeConstructor]) {
   } else if (dartObject is Function) {
     return new JsFunction.withThis((HtmlElement element,
                                     [arg0, arg1, arg2, arg3, arg4, arg5, arg6]) {
-      if (typeConstructor == null) {
-        typeConstructor = (element) => new PolymerElement.from(element);
-      }
-      var polymerElement = typeConstructor(element);
-      List args = [polymerElement, arg0, arg1, arg2, arg3, arg4, arg5, arg6];
+//      if (typeConstructor == null) {
+//        typeConstructor = (element) => new PolymerElement.from(element);
+//      }
+//      var polymerElement = new PolymerElement.from(element);
+      List args = [element, arg0, arg1, arg2, arg3, arg4, arg5, arg6];
       args.removeWhere((e) => e == null);
-      Function.apply(dartObject, args);
+      args = args.map(dartify).toList();
+      return Function.apply(dartObject, args);
     });
   }
   return dartObject;
@@ -54,6 +55,23 @@ Map<Type, JsFunction> dartType2Js = {
   JsObject : context["Object"],
   Function : context["JsFunction"]
 };
+
+
+Object dartify(dynamic js) {
+  if (js is HtmlElement) {
+    return new PolymerElement.from(js);
+  }
+  else if (!(js is JsObject)) {
+    return js;
+  } else if (js is JsFunction) {
+    return ([arg0, arg1, arg2, arg3, arg4, arg5, arg6]) =>
+    js.apply([arg0, arg1, arg2, arg3, arg4, arg5, arg6]);
+  } else if (js["constructor"] == context["Object"]) {
+    return mapify(js);
+  } else {
+    return js;
+  }
+}
 
 /**
  * Convert a JavaScript result object to an equivalent Dart map.
