@@ -6,7 +6,7 @@ class IronIcon extends PolymerElement {
 
   IronIcon() : super.tag("iron-icon");
   IronIcon.from(HtmlElement element) : super.from(element);
-  IronIcon.$(String selector) : super.$(selector);
+  IronIcon.$(String selector) : super.from$(selector);
 
   /// The name of the icon to use. The name should be of the form:
   /// `iconset_name:icon_name`.

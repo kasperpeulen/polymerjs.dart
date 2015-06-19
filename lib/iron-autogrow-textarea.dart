@@ -24,7 +24,7 @@ class IronAutogrowTextarea extends PolymerElement with IronValidatableBehavior {
 
   IronAutogrowTextarea() : super.tag("iron-autogrow-textarea");
   IronAutogrowTextarea.from(HtmlElement element) : super.from(element);
-  IronAutogrowTextarea.$(String selector) : super.$(selector);
+  IronAutogrowTextarea.$(String selector) : super.from$(selector);
 
   /// Use this property instead of `value` for two-way data binding.
   String get bindValue => this["bindValue"];

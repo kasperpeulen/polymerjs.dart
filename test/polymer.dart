@@ -30,7 +30,7 @@ void main() {
 // </iron-pages>
 
   group("IronSelectableBehavior", () {
-    var pages = new IronPages.$("iron-pages");
+    var pages = new IronPages.from$("iron-pages");
     test("properties", () {
       pages.selectedAttribute = "my-attribute";
       pages.selected = 0;
@@ -57,9 +57,9 @@ void main() {
 
   group("IronMultiSelectableBehavior", () {
 
-    var menu = new PaperMenu.$("paper-menu");
+    var menu = new PaperMenu.from$("paper-menu");
     while (menu == null) {
-      menu = new PaperMenu.$("paper-menu");
+      menu = new PaperMenu.from$("paper-menu");
     }
     test("properties and methods", () {
       expect(menu.multi, true);
@@ -101,7 +101,7 @@ void main() {
     test("listen", () {
       var pages;
       while (pages == null) {
-        pages = new IronPages.$("iron-pages");
+        pages = new IronPages.from$("iron-pages");
       }
       expect(pages.selected, 1);
       pages.ironResize.listen((e) {
@@ -113,7 +113,7 @@ void main() {
 
   // <paper-button raised></paper-button>
   group("PaperButton", () {
-    var button = new PaperButton.$("paper-button");
+    var button = new PaperButton.from$("paper-button");
     test("button.raised == true", () => expect(button.raised, isTrue));
     test("button.toggles == false", () => expect(button.toggles, false));
     test("button.active == false", () => expect(button.active, false));
@@ -134,7 +134,7 @@ void main() {
 
   group("Polymer base", () {
     test("async fire",() {
-      var button = new PaperButton.$("paper-button");
+      var button = new PaperButton.from$("paper-button");
       button.raised = false;
       button.async(() {
         button.raised = true;

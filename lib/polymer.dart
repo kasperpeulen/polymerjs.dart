@@ -39,6 +39,15 @@ JsObject polymer(Map constructor) {
   return context.callMethod("Polymer", [js]);
 }
 class Polymer {
+
+  static DomApi dom(dynamic element) {
+    if (element is WebElement) {
+      element = element.element;
+    }
+    return new DomApi.fromJs(
+        context["Polymer"].callMethod("dom", [element]));
+  }
+
   static JsObject get js => context["Polymer"];
 
   dynamic operator [](String propertyName) => js[propertyName];
@@ -63,6 +72,99 @@ class Polymer {
   static updateStyles() => context["Polymer"].callMethod("updateStyles");
 }
 
+class DomApi {
+
+  JsObject js;
+
+  DomApi.fromJs(this.js);
+
+  dynamic property(String name) => js[name];
+
+  dynamic setProperty(String name, dynamic value) => js[name] = value;
+
+  dynamic operator [](String propertyName) {
+    var property = js[propertyName];
+//    if (property is JsFunction) {
+//      dartify([arg0, arg1, arg2, arg3, arg4, arg5, arg6]) =>
+//      call(propertyName, [arg0, arg1, arg2, arg3, arg4, arg5, arg6]);
+//      return dartify;
+//    }
+    return property;
+  }
+
+  void operator []=(String propertyName, dynamic value) {
+    js[propertyName] = value;
+  }
+
+  dynamic call(String methodName, [List args]) =>
+  js.callMethod(methodName, args);
+
+
+  List get classList => this["classList"];
+  set classList(List value) => this["classList"] = value;
+
+  List<Node> get childNodes => this["childNodes"];
+
+  set childNodes(List<Node> value) => this["childNodes"] = value;
+
+  Node get parentNode => this["parentNode"];
+
+  set parentNode(Node value) => this["parentNode"] = value;
+
+  Node get firstChild => this["firstChild"];
+
+  set firstChild(Node value) => this["firstChild"] = value;
+
+  Node get lastChild => this["lastChild"];
+
+  set lastChild(Node value) => this["lastChild"] = value;
+
+  Element get firstElementChild => this["firstElementChild"];
+
+  set firstElementChild(Element value) => this["firstElementChild"] = value;
+
+  Element get lastElementChild => this["lastElementChild"];
+
+  set lastElementChild(Element value) => this["lastElementChild"] = value;
+
+  Node get previousSibling => this["previousSibling"];
+
+  set previousSibling(Node value) => this["previousSibling"] = value;
+
+  Node get nextSibling => this["nextSibling"];
+
+  set nextSibling(Node value) => this["nextSibling"] = value;
+
+  String get textContent => this["textContent"];
+
+  set textContent(String value) => this["textContent"] = value;
+
+  String get innerHTML => this["innerHTML"];
+
+  set innerHTML(String value) => this["innerHTML"] = value;
+
+  void appendChild(Node node) => call("appendChild", [node]);
+
+  void insertBefore(Node node, Node beforeNode) => call("insertBefore", [node, beforeNode]);
+
+  void removeChild(Node node) => call("removeChild", [node]);
+
+  void flush() => call("flush", []);
+
+  Element querySelector(String selectors) => call("querySelector", [selectors]);
+
+  List<Element> querySelectorAll(String selectors) =>
+  call("querySelectorAll", [selectors]);
+
+  List<Node> getDistributedNodes() => call("getDistributedNodes", []);
+
+  dynamic getDestinationInsertionPoints() => call("getDestinationInsertionPoints", []);
+
+  void setAttribute(attribute, value) => call("setAttribute", [attribute, value]);
+
+  void removeAttribute(attribute) => call("removeAttribute", [attribute]);
+
+}
 
 class WebElement {
 
@@ -83,7 +185,7 @@ class WebElement {
 
   WebElement.from(this.element);
 
-  WebElement.$(String selectors) : element = querySelector(selectors);
+  WebElement.from$(String selectors) : element = querySelector(selectors);
 
   WebElement.fromJsObject(JsObject jsHTMLElement)
       : element = jsElementToDartElement(jsHTMLElement);
@@ -196,7 +298,7 @@ class PolymerElement extends WebElement with PolymerBase {
 
   PolymerElement.from(HtmlElement element) : super.from(element);
 
-  PolymerElement.$(String selector) : super.$(selector);
+  PolymerElement.from$(String selector) : super.from$(selector);
 
   PolymerElement.fromConstructor(JsFunction constructor, [List args])
       : super.fromJsObject(new JsObject(constructor, args));
@@ -222,6 +324,11 @@ class PolymerElement extends WebElement with PolymerBase {
       js[propertyName] = value;
     }
   }
+
+
+  dynamic get root => this["root"];
+
+  Map<String, HtmlElement> get $ => this[r'$'];
 
   /// The user can directly modify a Polymer element's custom style property by
   /// setting key-value pairs in `customStyle` on the element and then calling
@@ -521,7 +628,7 @@ class IronPages extends PolymerElement
     with IronSelectableBehavior, IronResizableBehavior {
   IronPages() : super.tag("iron-pages");
   IronPages.from(HtmlElement element) : super.from(element);
-  IronPages.$(String selector) : super.$(selector);
+  IronPages.from$(String selector) : super.from$(selector);
 }
 
 /// <paper-menu> implements an accessible menu control with Material Design
@@ -536,7 +643,7 @@ class PaperMenu extends PolymerElement
     with IronMenuBehavior, IronMultiSelectableBehavior, IronSelectableBehavior, IronA11yKeysBehavior {
   PaperMenu() : super.tag("paper-menu");
   PaperMenu.from(HtmlElement element) : super.from(element);
-  PaperMenu.$(String selector) : super.$(selector);
+  PaperMenu.from$(String selector) : super.from$(selector);
 }
 
 /// `<paper-item>` is a non-interactive list item. By default, it is a horizontal
@@ -586,14 +693,14 @@ class PaperMenu extends PolymerElement
 class PaperItem extends PolymerElement {
   PaperItem() : super.tag("paper-item");
   PaperItem.from(HtmlElement element) : super.from(element);
-  PaperItem.$(String selector) : super.$(selector);
+  PaperItem.from$(String selector) : super.from$(selector);
 }
 
 class PaperButton extends PolymerElement
     with IronButtonState, IronControlState, IronA11yKeysBehavior {
   PaperButton() : super.tag("paper-button");
   PaperButton.from(HtmlElement element) : super.from(element);
-  PaperButton.$(String selector) : super.$(selector);
+  PaperButton.from$(String selector) : super.from$(selector);
 
   /// If true, the button should be styled with a shadow.
   bool get raised => this["raised"];

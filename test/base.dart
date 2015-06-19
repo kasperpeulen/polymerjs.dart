@@ -12,7 +12,7 @@ import 'package:polymerjs/jsutils.dart';
 
 
 void main() {
-  var item = new PolymerElement.$("paper-item");
+  var item = new PolymerElement.from$("paper-item");
   Stream stream = window.on['WebComponentsReady'];
   test("WebComponentsReady", () {
     if (context["CustomElements"]["ready"] == null) {

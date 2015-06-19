@@ -44,7 +44,7 @@ class IronCollapse extends PolymerElement {
 
   IronCollapse() : super.tag("iron-collapse");
   IronCollapse.from(HtmlElement element) : super.from(element);
-  IronCollapse.$(String selector) : super.$(selector);
+  IronCollapse.$(String selector) : super.from$(selector);
 
   /// If true, the orientation is horizontal; otherwise is vertical.
   ///
