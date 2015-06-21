@@ -5,7 +5,7 @@ const chrome = "chrome";
 const firefox = "firefox";
 const safari = "safari";
 
-const all = const ['dartium,firefox,chrome'];
+const all = const ['firefox,chrome'];
 const base = "test/base.dart";
 const polymer = "test/polymer.dart";
 const iron_collapse = "test/iron-collapse.dart";
