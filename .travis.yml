@@ -4,8 +4,8 @@ dart:
   - stable
 
 before_install:
-  - apt-get -y -q update && apt-get -q -y chrome firefox
-    
+  - sudo apt-get -y -q update && apt-get -q -y chrome firefox
+
 before_script:
   - chmod +x tool/travis.sh
 
