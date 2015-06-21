@@ -8,8 +8,7 @@ dependencies:
 #  web_components: any
 dev_dependencies:
   browser: any
-  test:
-    git: git://github.com/dart-lang/test.git
+  test: any
   grinder: any
 #transformers:
 #- web_components:

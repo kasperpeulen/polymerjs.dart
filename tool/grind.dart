@@ -35,6 +35,7 @@ testAll() => new TestRunner().test(
 );
 
 @Task("Custom test")
+@Depends("bower")
 test() => new TestRunner().test(
     files: [
       base,
