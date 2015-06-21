@@ -1,0 +1,30 @@
+<!-- To bind to a child element’s textContent, you can simply include the annotation
+inside the child element. The binding annotation must currently span the entire
+content of the tag:-->
+
+<dom-module id="bind-to-text">
+
+  <template>
+    First: <span>[[first]]</span><br>
+    Last: <span>[[last]]</span>
+  </template>
+
+  <script type="application/dart">
+    import "package:polymerjs/polymer.dart";
+
+    @initMethod
+    main() {
+      Polymer.call({
+        'is': 'bind-to-text',
+
+        'properties': {
+          'first': String,
+          'last': String
+        }
+      });
+    }
+  </script>
+</dom-module>
+<!-- String concatenation is not supported inside a tag, and the tag can’t
+contain any whitespace. Binding to text content is always one-way, host-to-child.
+-->

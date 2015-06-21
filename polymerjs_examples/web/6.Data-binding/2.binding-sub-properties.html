@@ -1,0 +1,27 @@
+<dom-module id="binding-sub-properties">
+
+  <template>
+    <bind-to-text first="{{user.first}}" last="{{user.last}}"></bind-to-text>
+  </template>
+
+  <script type="application/dart">
+    import "package:polymerjs/polymer.dart";
+
+    @initMethod
+    main() {
+      Polymer.call({
+        'is': 'binding-sub-properties',
+        'properties': {
+          'user': {
+            'type': Map,
+            'value': {
+              'first': 'Patrick',
+              'last': 'Kluivert'
+            },
+          }
+        }
+      });
+    }
+  </script>
+
+</dom-module>

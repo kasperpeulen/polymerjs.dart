@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>6. Data binding</title>
+
+    <script src="packages/polymerjs_examples/components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="packages/polymerjs_examples/components/polymer/polymer.html">
+    <link rel="import" href="1.bind-to-text.html">
+    <link rel="import" href="2.binding-sub-properties.html">
+  </head>
+  <body>
+    <bind-to-text first="Samuel" last="Adams"></bind-to-text>
+    <br>
+    <binding-sub-properties></binding-sub-properties>
+    <script type="application/dart">
+      import 'package:polymerjs/polymer.dart' show initWebComponents;
+
+      main() => initWebComponents();
+    </script>
+    <script src="packages/browser/dart.js"></script>
+  </body>
+</html>
