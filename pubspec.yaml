@@ -5,7 +5,7 @@ description: polymer.js 1.0 wrapper
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
-#  web_components: any
+  web_components: any
 dev_dependencies:
   browser: any
   test: any
