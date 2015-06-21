@@ -6,8 +6,8 @@ import 'dart:async';
 import 'package:polymerjs/iron-behaviours.dart';
 import 'package:polymerjs/jsutils.dart';
 
-export 'package:initialize/initialize.dart';
-export 'package:web_components/src/init.dart';
+//export 'package:initialize/initialize.dart';
+//export 'package:web_components/src/init.dart';
 export "dart:html";
 export "dart:js";
 export 'package:polymerjs/jsutils.dart';
